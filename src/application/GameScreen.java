@@ -1,13 +1,10 @@
 package application;
 
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
@@ -51,43 +48,13 @@ public class GameScreen extends Application {
 		// bottom middle pocket
 		Circle bottomMidP = new Circle(576.5, 487.68, 18);
 
-		// create cue ball
-		Circle cueBall = new Circle(420.75, 321.84, 12, Color.WHITE);
+		// make the cue ball
+		CueBall makeCueBall = new CueBall(420.75, 321.84, Color.WHITE);
+		Circle cueBall = makeCueBall.getBall();
 
-
-
-		// the direction the ball will go in when shot is taken
-		Line directionLine = new Line();
 		// create the group object which holds all the objects of the scene
-		Group group = new Group(outerTable, innerTable, topLeftP, bottomLeftP, topRightP, bottomRightP, topMidP, bottomMidP, cueBall, directionLine);
+		Group group = new Group(outerTable, innerTable, topLeftP, bottomLeftP, topRightP, bottomRightP, topMidP, bottomMidP, cueBall, makeCueBall.getDirectionLine());
 		Scene scene = new Scene(group, 1152, 648, Color.BEIGE);
-
-		// TODO: probably should be moved to cue ball rather than scene
-		scene.setOnMousePressed(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				directionLine.setOpacity(1);
-				directionLine.setStartX(event.getSceneX());
-				directionLine.setStartY(event.getSceneY());
-			}
-		});
-
-		// TODO: probably should be moved to cue ball rather than scene
-		scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				directionLine.setEndX(directionLine.getStartX() - (event.getX() - directionLine.getStartX()));
-				directionLine.setEndY(directionLine.getStartY() - (event.getY() - directionLine.getStartY()));
-			}
-		});
-
-		// TODO: probably should be moved to cue ball rather than scene
-		scene.setOnMouseReleased(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				directionLine.setOpacity(0);
-			}
-		});
 
 		stage.setScene(scene);
 		stage.show();
