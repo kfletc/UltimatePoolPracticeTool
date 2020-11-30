@@ -1,15 +1,16 @@
 package application;
 
+import javafx.animation.PathTransition;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.util.Duration;
 
 public class CueBall {
 	private Circle ball;
 	private Line directionLine;
-	private double speed;
 
 	CueBall(double xPos, double yPos, Color color) {
 		ball = new Circle(xPos, yPos, 12, color);
@@ -22,6 +23,8 @@ public class CueBall {
 				directionLine.setOpacity(1);
 				directionLine.setStartX(ball.getCenterX());
 				directionLine.setStartY(ball.getCenterY());
+				directionLine.setEndX(ball.getCenterX());
+				directionLine.setEndY(ball.getCenterY());
 			}
 		});
 
@@ -37,30 +40,19 @@ public class CueBall {
 			@Override
 			public void handle(MouseEvent event) {
 				directionLine.setOpacity(0);
-				shootCue((directionLine.getEndX() - directionLine.getStartX()), (directionLine.getEndY() - directionLine.getStartY()));
+				shootCue(directionLine.getEndX(), directionLine.getEndY());
 			}
 		});
 	}
 
-	private void shootCue(double deltaX, double deltaY) {
-		double angle = Math.atan2(deltaY, deltaX);
-		speed = 1;
-		double ballX = ball.getCenterX();
-		double ballY = ball.getCenterY();
-
-		while(!closeEnough()) {
-			// TODO: ball just teleports
-			ball.setCenterX(ballX += speed * Math.cos(angle));
-			ball.setCenterY(ballY += speed * Math.sin(angle));
-
-		}
-	}
-
-	private boolean closeEnough() {
-		double dist = Math.sqrt(Math.pow(directionLine.getEndX() - ball.getCenterX(), 2) + Math.pow(directionLine.getEndX() - ball.getCenterX(), 2));
-		if(dist < 20) {
-			return true;
-		} else { return false; }
+	private void shootCue(double xPos, double yPos) {
+		PathTransition path = new PathTransition();
+		path.setDuration(Duration.millis(1000));
+		path.setNode(ball);
+		path.setPath(directionLine);
+		path.play();
+		ball.setCenterX(xPos);
+		ball.setCenterY(yPos);
 	}
 
 	public Circle getBall() {
